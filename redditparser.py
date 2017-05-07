@@ -9,6 +9,32 @@ class RedditParser:
         self.reddit = praw.Reddit('bot1')
         self.memeeconomy = self.reddit.subreddit('MemeEconomy')
 
+    def find_dank_memes_from_hot(self):
+        memes = []
+
+        for submission in self.memeeconomy.hot(limit = 50):
+            url_allowed = Rules.url_allowed(submission.url)
+            if not url_allowed:
+                continue
+
+            should_copy = Rules.should_be_copied(submission.title, submission.score)
+            if not should_copy:
+                continue
+
+            memes.append(MemeDTO(submission.id, submission.title, submission.score, submission.url))
+
+        return memes
+
+
+class MemeDTO:
+    def __init__(self, id, title, score, url):
+        self.id = id
+        self.title = title
+        self.score = score
+        self.url = url
+
+    def __str__(self):
+        return "id={:s}\ntitle={:s}\nscore={:s}\nurl={:s}\n".format(self.id, self.title, str(self.score), self.url)
 
 class Rules:
     KEYWORDS = [
@@ -59,11 +85,5 @@ class Rules:
 
 if __name__ == '__main__':
     reddit_parser = RedditParser()
-    for submission in reddit_parser.memeeconomy.hot(limit=50):
-        copy = Rules.should_be_copied(submission.title, submission.score)
-        print('Title: ', submission.title)
-        print('Score: ', submission.score)
-        print('Copy: ', copy)
-        print('Url: ', submission.url)
-        print('Url allowed: ', Rules.url_allowed(submission.url))
-        print('---------------------------------\n')
+    for meme in reddit_parser.find_dank_memes_from_hot():
+        print str(meme)
