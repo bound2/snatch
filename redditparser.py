@@ -20,7 +20,7 @@ class RedditParser:
 
     @staticmethod
     def __find_dank_memes(listing):
-        memes = []
+        memes = set()
 
         for submission in listing:
             url_allowed = Rules.url_allowed(submission.url)
@@ -31,7 +31,7 @@ class RedditParser:
             if not should_copy:
                 continue
 
-            memes.append(MemeDTO(submission.id, submission.title, submission.score, submission.url))
+            memes.add(MemeDTO(submission.id, submission.title, submission.score, submission.url))
 
         return memes
 
@@ -45,6 +45,19 @@ class MemeDTO:
 
     def __str__(self):
         return "id={:s}\ntitle={:s}\nscore={:s}\nurl={:s}\n".format(self.id, self.title, str(self.score), self.url)
+
+    def __eq__(self, other):
+        if isinstance(other, self.__class__):
+            return self.id == other.id
+        return NotImplemented
+
+    def __ne__(self, other):
+        if isinstance(other, self.__class__):
+            return not self.__eq__(other)
+        return NotImplemented
+
+    def __hash__(self):
+        return hash(self.id)
 
 
 class Rules:
