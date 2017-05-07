@@ -12,22 +12,22 @@ class RedditParser:
 
 class Rules:
     KEYWORDS = [
-        list(["buy", "buy", "buy"]),
-        list(["buy", "buy", "buy!!!"]),
-        list(["invest", "invest", "invest"]),
-        list(["high profit"]),
-        list(["buy quick", "sell quick"]),
-        list(["great potential", "buy"])
+        list(['buy', 'buy', 'buy']),
+        list(['buy', 'buy', 'buy!!!']),
+        list(['invest', 'invest', 'invest']),
+        list(['high profit']),
+        list(['buy quick', 'sell quick']),
+        list(['great potential', 'buy'])
     ]
 
     BAD_KEYWORDS = [
-        list(["sell", "sell", "sell"]),
-        list(["invest", "worthy", "?"]),
-        list(["should", "i", "invest"]),
-        list(["could", "i", "get"]),
-        list(["what", "do", "you"]),
-        list(["is", "worth", "anything"]),
-        list(["safe", "investment", "?"])
+        list(['sell', 'sell', 'sell']),
+        list(['invest', 'worthy', '?']),
+        list(['should', 'i', 'invest']),
+        list(['could', 'i', 'get']),
+        list(['what', 'do', 'you']),
+        list(['is', 'worth', 'anything']),
+        list(['safe', 'investment', '?'])
     ]
 
     @staticmethod
@@ -50,9 +50,9 @@ class Rules:
 
     @staticmethod
     def url_allowed(url):
-        if "i.redd.it" in url:
+        if 'i.redd.it' in url:
             return True
-        elif "i.imgur.com" in url:
+        elif 'i.imgur.com' in url:
             return True
         return False
 
@@ -61,9 +61,9 @@ if __name__ == '__main__':
     reddit_parser = RedditParser()
     for submission in reddit_parser.memeeconomy.hot(limit=50):
         copy = Rules.should_be_copied(submission.title, submission.score)
-        #print("Title: ", submission.title)
-        #print("Score: ", submission.score)
-        #print("Copy: ", copy)
-        print("Url: ", submission.url)
-        print("Url allowed: ", Rules.url_allowed(submission.url))
-        print("---------------------------------\n")
+        print('Title: ', submission.title)
+        print('Score: ', submission.score)
+        print('Copy: ', copy)
+        print('Url: ', submission.url)
+        print('Url allowed: ', Rules.url_allowed(submission.url))
+        print('---------------------------------\n')
