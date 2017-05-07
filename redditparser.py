@@ -16,7 +16,7 @@ class RedditParser:
         return RedditParser.__find_dank_memes(self.memeeconomy.rising(limit=50))
 
     def find_dank_memes_from_new(self):
-        return RedditParser.__find_dank_memes(self.memeeconomy.new(limit = 50))
+        return RedditParser.__find_dank_memes(self.memeeconomy.new(limit=50))
 
     @staticmethod
     def __find_dank_memes(listing):
@@ -92,9 +92,3 @@ class Rules:
         elif 'i.imgur.com' in url:
             return True
         return False
-
-
-if __name__ == '__main__':
-    reddit_parser = RedditParser()
-    for meme in reddit_parser.find_dank_memes_from_hot():
-        print str(meme)
