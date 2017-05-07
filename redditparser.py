@@ -10,9 +10,19 @@ class RedditParser:
         self.memeeconomy = self.reddit.subreddit('MemeEconomy')
 
     def find_dank_memes_from_hot(self):
+        return RedditParser.__find_dank_memes(self.memeeconomy.hot(limit=50))
+
+    def find_dank_memes_from_rising(self):
+        return RedditParser.__find_dank_memes(self.memeeconomy.rising(limit=50))
+
+    def find_dank_memes_from_new(self):
+        return RedditParser.__find_dank_memes(self.memeeconomy.new(limit = 50))
+
+    @staticmethod
+    def __find_dank_memes(listing):
         memes = []
 
-        for submission in self.memeeconomy.hot(limit = 50):
+        for submission in listing:
             url_allowed = Rules.url_allowed(submission.url)
             if not url_allowed:
                 continue
@@ -36,8 +46,9 @@ class MemeDTO:
     def __str__(self):
         return "id={:s}\ntitle={:s}\nscore={:s}\nurl={:s}\n".format(self.id, self.title, str(self.score), self.url)
 
+
 class Rules:
-    KEYWORDS = [
+    __KEYWORDS = [
         list(['buy', 'buy', 'buy']),
         list(['buy', 'buy', 'buy!!!']),
         list(['invest', 'invest', 'invest']),
@@ -46,7 +57,7 @@ class Rules:
         list(['great potential', 'buy'])
     ]
 
-    BAD_KEYWORDS = [
+    __BAD_KEYWORDS = [
         list(['sell', 'sell', 'sell']),
         list(['invest', 'worthy', '?']),
         list(['should', 'i', 'invest']),
@@ -62,12 +73,12 @@ class Rules:
             return True
         else:
             words = list(title.lower().split(' '))
-            good_keywords = Rules.match_to_keywords(words, Rules.KEYWORDS)
-            bad_keywords = Rules.match_to_keywords(words, Rules.BAD_KEYWORDS)
+            good_keywords = Rules.__match_to_keywords(words, Rules.__KEYWORDS)
+            bad_keywords = Rules.__match_to_keywords(words, Rules.__BAD_KEYWORDS)
             return good_keywords and not bad_keywords
 
     @staticmethod
-    def match_to_keywords(words, validation_keywords):
+    def __match_to_keywords(words, validation_keywords):
         for keywords in validation_keywords:
             if economyutils.sublist(keywords, words):
                 return True
