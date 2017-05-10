@@ -1,7 +1,5 @@
 #!/usr/bin/env python
-from redditparser import RedditParser
-from redditparser import MemeDTO
-
+from parser.redditparser import RedditParser
 
 if __name__ == '__main__':
     reddit_parser = RedditParser()
