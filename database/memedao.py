@@ -27,4 +27,9 @@ class MemeDao:
         return None
 
     def find_by_site(self, site):
-        return self.__table.find({'site': site})
+        cursor = self.__table.find({'site': site})
+        memes = set()
+        for record in cursor:
+            meme = Meme(record.get('id'), record.get('site'), record.get('text'), record.get('media_url'))
+            memes.add(meme)
+        return memes
