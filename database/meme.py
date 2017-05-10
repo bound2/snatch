@@ -1,9 +1,7 @@
 #!/usr/bin/env python
 
-from enum import Enum
 
-
-class Site(Enum):
+class Site:
     REDDIT = 1
 
 
