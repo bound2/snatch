@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 from parser.redditparser import RedditParser
 from database.memedao import MemeDao
+from database.meme import Site
 
 if __name__ == '__main__':
     reddit_parser = RedditParser()
@@ -13,5 +14,6 @@ if __name__ == '__main__':
 
     results = meme_dao.insert_many(all_memes)
 
-    for result in results:
-        print result.id
+    cursor = meme_dao.find_by_site(Site.REDDIT)
+    for document in cursor:
+        print document

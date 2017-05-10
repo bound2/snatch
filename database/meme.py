@@ -2,7 +2,7 @@
 
 
 class Site:
-    REDDIT = 1
+    REDDIT = 'reddit'
 
 
 class Meme:

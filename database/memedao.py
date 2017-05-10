@@ -23,3 +23,6 @@ class MemeDao:
         result = self.__table.find({'id': id, 'site': site})
         meme = Meme(result.id, result.site, result.text, result.media_url)
         return meme
+
+    def find_by_site(self, site):
+        return self.__table.find({'site': site})
