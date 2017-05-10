@@ -13,30 +13,38 @@ class RedditParser:
         self.memeeconomy = self.reddit.subreddit('MemeEconomy')
 
     def find_dank_memes_from_hot(self):
-        return RedditParser.__find_dank_memes(self.memeeconomy.hot(limit=50))
+        return self.apply_filter(self.find_dank_memes(self.memeeconomy.hot(limit=50)))
 
     def find_dank_memes_from_rising(self):
-        return RedditParser.__find_dank_memes(self.memeeconomy.rising(limit=50))
+        return self.apply_filter(self.find_dank_memes(self.memeeconomy.rising(limit=50)))
 
     def find_dank_memes_from_new(self):
-        return RedditParser.__find_dank_memes(self.memeeconomy.new(limit=50))
+        return self.apply_filter(self.find_dank_memes(self.memeeconomy.new(limit=50)))
 
-    @staticmethod
-    def __find_dank_memes(listing):
-        memes = set()
+    def find_dank_memes(self, listing):
+        meme_map = dict()
 
         for submission in listing:
-            url_allowed = Rules.url_allowed(submission.url)
+            meme = Meme(id=submission.id, site=Site.REDDIT, text=submission.title, media_url=submission.url)
+            meme_map.update({meme: submission.score})
+
+        return meme_map
+
+    def apply_filter(self, meme_map):
+        filtered_memes = set()
+        for key, value in meme_map.iteritems():
+
+            url_allowed = Rules.url_allowed(key.media_url)
             if not url_allowed:
                 continue
 
-            should_copy = Rules.should_be_copied(submission.title, submission.score)
+            should_copy = Rules.should_be_copied(key.text, value)
             if not should_copy:
                 continue
 
-            memes.add(Meme(id=submission.id, site=Site.REDDIT, text=submission.title, media_url=submission.url))
+            filtered_memes.add(key)
 
-        return memes
+        return filtered_memes
 
 
 class Rules:
