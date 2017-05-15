@@ -10,6 +10,7 @@ from util.jsonutils import from_json
 
 
 class MemeDao:
+    # TODO different db for test and production
     def __init__(self):
         self._client = MongoClient()
         self._db = self._client.test

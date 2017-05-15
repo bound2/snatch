@@ -8,6 +8,7 @@ from util import collectionutils
 
 
 class RedditParser:
+    # TODO use single configuration for test and production?
     def __init__(self):
         self.reddit = praw.Reddit('bot1')
         self.memeeconomy = self.reddit.subreddit('MemeEconomy')
