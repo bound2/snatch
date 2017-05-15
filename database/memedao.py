@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 
 from pymongo import MongoClient
+from pymongo import ASCENDING
+from pymongo import DESCENDING
 from meme import Meme
 from util.jsonutils import collection_to_json
 from util.jsonutils import to_json
@@ -12,6 +14,7 @@ class MemeDao:
         self._client = MongoClient()
         self._db = self._client.test
         self._table = self._db.meme
+        self._table.create_index([("post_id", ASCENDING), ("site", ASCENDING)], unique=True)
 
     def insert_one(self, data):
         return self._table.insert_one(from_json(to_json(data)))
