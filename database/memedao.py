@@ -19,10 +19,10 @@ class MemeDao:
     def insert_many(self, data):
         return self._table.insert_many(from_json(collection_to_json(data)))
 
-    def find_by_id(self, id, site):
-        cursor = self._table.find({'id': id, 'site': site})
+    def find_by_id(self, post_id, site):
+        cursor = self._table.find({'post_id': post_id, 'site': site})
         for record in cursor:
-            meme = Meme(record.get('id'), record.get('site'), record.get('text'), record.get('media_url'))
+            meme = Meme(record.get('post_id'), record.get('site'), record.get('text'), record.get('media_url'))
             return meme
         return None
 
@@ -30,7 +30,7 @@ class MemeDao:
         cursor = self._table.find({'site': site})
         memes = set()
         for record in cursor:
-            meme = Meme(record.get('id'), record.get('site'), record.get('text'), record.get('media_url'))
+            meme = Meme(record.get('post_id'), record.get('site'), record.get('text'), record.get('media_url'))
             memes.add(meme)
         return memes
 

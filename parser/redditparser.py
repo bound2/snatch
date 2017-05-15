@@ -25,7 +25,7 @@ class RedditParser:
         meme_map = dict()
 
         for submission in listing:
-            meme = Meme(id=submission.id, site=Site.REDDIT, text=submission.title, media_url=submission.url)
+            meme = Meme(post_id=submission.id, site=Site.REDDIT, text=submission.title, media_url=submission.url)
             meme_map.update({meme: submission.score})
 
         return meme_map

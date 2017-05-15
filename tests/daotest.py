@@ -35,8 +35,8 @@ class DaoTest(unittest.TestCase):
         assert result.inserted_id is not None
 
         # check that it was saved and is accessible from database
-        meme_loaded = self._meme_dao.find_by_id(meme_to_save.id, 'reddit')
-        assert meme_loaded.id == meme_to_save.id
+        meme_loaded = self._meme_dao.find_by_id(meme_to_save.post_id, 'reddit')
+        assert meme_loaded.post_id == meme_to_save.post_id
         assert meme_loaded.site == meme_to_save.site
         assert meme_loaded.media_url == meme_to_save.media_url
         assert meme_loaded.text == meme_to_save.text
@@ -51,7 +51,7 @@ class DaoTest(unittest.TestCase):
 
     def test_unique_index(self):
         self._meme_dao.delete_all()
-        meme = Meme()
+        #meme = Meme()
 
 if __name__ == '__main__':
     unittest.main()

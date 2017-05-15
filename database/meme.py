@@ -6,19 +6,19 @@ class Site:
 
 
 class Meme:
-    def __init__(self, id, site, text, media_url):
-        self.id = id
+    def __init__(self, post_id, site, text, media_url):
+        self.post_id = post_id
         self.site = site
         self.text = text
         self.media_url = media_url
 
     def __str__(self):
-        return "id={:s}\nsite={:s}\ntext={:s}\nmedia_url={:s}\n".format(self.id, str(self.site), self.text, self
+        return "post_id={:s}\nsite={:s}\ntext={:s}\nmedia_url={:s}\n".format(self.post_id, str(self.site), self.text, self
                                                                         .media_url)
 
     def __eq__(self, other):
         if isinstance(other, self.__class__):
-            return self.id == other.id and self.site == other.site
+            return self.post_id == other.post_id and self.site == other.site
         return NotImplemented
 
     def __ne__(self, other):
@@ -27,4 +27,4 @@ class Meme:
         return NotImplemented
 
     def __hash__(self):
-        return hash(self.id) + hash(self.site)
+        return hash(self.post_id) + hash(self.site)
