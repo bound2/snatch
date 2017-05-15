@@ -3,6 +3,7 @@ import unittest
 import mock
 from reddittest import mock_reddit_data
 from parser.redditparser import RedditParser
+from parser.redditparser import Site
 from database.memedao import MemeDao
 
 
@@ -12,6 +13,10 @@ class DaoTest(unittest.TestCase):
     def setUpClass(cls):
         cls._reddit_parser = RedditParser()
         cls._meme_dao = MemeDao()
+
+    @classmethod
+    def tearDownClass(cls):
+        cls._meme_dao.delete_all()
 
     @mock.patch('__main__.RedditParser.find_dank_memes', return_value=mock_reddit_data())
     def test_insert_many(self, meme_mock):
@@ -32,8 +37,12 @@ class DaoTest(unittest.TestCase):
         assert meme_loaded.media_url == meme_to_save.media_url
         assert meme_loaded.text == meme_to_save.text
 
-    #TODO index duplicate test
-
+    @mock.patch('__main__.RedditParser.find_dank_memes', return_value=mock_reddit_data())
+    def test_find_by_site(self, meme_mock):
+        self._meme_dao.insert_many(self._reddit_parser.find_dank_memes_from_hot())
+        self._meme_dao.insert_many(self._reddit_parser.find_dank_memes_from_new())
+        # 10 length due to duplicate objects being returned by find_dank_memes
+        assert len(self._meme_dao.find_by_site(Site.REDDIT)) == 10
 
 
 if __name__ == '__main__':
