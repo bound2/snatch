@@ -13,6 +13,7 @@ class MemeDao:
         self._db = config.db
         self._table = self._db.meme
         self._table.create_index([("post_id", ASCENDING), ("site", ASCENDING)], unique=True)
+        self._table.create_index([("media_url", ASCENDING)], unique=True)
 
     def insert_one(self, data):
         return self._table.insert_one(from_json(to_json(data)))

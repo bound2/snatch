@@ -82,6 +82,22 @@ class DaoTest(unittest.TestCase):
         assert len(self._meme_dao.find_by_site('reddit')) == 1
         assert len(self._meme_dao.find_by_site('lulztech')) == 1
 
+    def test_unique_index_url_success(self):
+        self._meme_dao.delete_all()
+        # same post_id, different site
+        meme1 = Meme(post_id='london55', site='reddit', text='Crossover fidget memes on the rise! BUY BUY BUY',
+                     media_url='https://i.redd.it/xi7s8hwcsowy.jpg')
+        meme2 = Meme(post_id='london69', site='lulztech', text='POPE MEMES ON THE RISE!!! BUY BUY BUY NOW',
+                     media_url='https://i.redd.it/xi7s8hwcsowy.jpg')
+        self._meme_dao.insert_one(meme1)
+        with self.assertRaises(DuplicateKeyError) as context:
+            self._meme_dao.insert_one(meme2)
+
+        assert 'duplicate key error collection: test.meme index: media_url_1 dup key: { : "https://i.redd.it/xi7s8hwcsowy.jpg" }' in \
+               str(context.exception)
+        assert len(self._meme_dao.find_by_site('reddit')) == 1
+        assert len(self._meme_dao.find_by_site('lulztech')) == 0
+
 
 if __name__ == '__main__':
     unittest.main()
