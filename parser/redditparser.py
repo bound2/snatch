@@ -9,9 +9,32 @@ from util import collectionutils
 
 class RedditParser:
     # TODO use single configuration for test and production?
-    def __init__(self):
+    def __init__(self, fetch_limit=25):
         self.reddit = praw.Reddit('bot1')
         self.memeeconomy = self.reddit.subreddit('MemeEconomy')
+        self.fetch_limit = fetch_limit
+
+    def find_dank_memes_hot(self, memes, last_submission):
+        if last_submission is None:
+            submissions = self.memeeconomy.hot(limit=self.fetch_limit)
+        else:
+            page = len(memes) / self.fetch_limit
+            submissions = self.memeeconomy.hot(limit=self.fetch_limit,
+                                               params={"count": self.fetch_limit * page, "after": last_submission.fullname})
+
+        memes.update(self.parse_dank_memes(submissions))
+        meme_size = len(memes)
+        print meme_size
+        if len(memes) % self.fetch_limit == 0:
+            return self.find_dank_memes_hot(memes, self._get_last_submission(submissions))
+        else:
+            return self.apply_filter(memes)
+
+    def _get_last_submission(self, submissions):
+        last_submission = None
+        for submission in submissions._listing.children:
+            last_submission = submission
+        return last_submission
 
     def find_dank_memes_from_hot(self):
         return self.apply_filter(self.parse_dank_memes(self.memeeconomy.hot(limit=50)))
