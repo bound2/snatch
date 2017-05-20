@@ -14,15 +14,15 @@ class RedditParser:
         self.memeeconomy = self.reddit.subreddit('MemeEconomy')
 
     def find_dank_memes_from_hot(self):
-        return self.apply_filter(self.find_dank_memes(self.memeeconomy.hot(limit=50)))
+        return self.apply_filter(self.parse_dank_memes(self.memeeconomy.hot(limit=50)))
 
     def find_dank_memes_from_rising(self):
-        return self.apply_filter(self.find_dank_memes(self.memeeconomy.rising(limit=50)))
+        return self.apply_filter(self.parse_dank_memes(self.memeeconomy.rising(limit=50)))
 
     def find_dank_memes_from_new(self):
-        return self.apply_filter(self.find_dank_memes(self.memeeconomy.new(limit=50)))
+        return self.apply_filter(self.parse_dank_memes(self.memeeconomy.new(limit=50)))
 
-    def find_dank_memes(self, listing):
+    def parse_dank_memes(self, listing):
         meme_map = dict()
 
         for submission in listing:
