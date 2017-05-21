@@ -20,18 +20,18 @@ class DaoTest(unittest.TestCase):
     def tearDownClass(cls):
         cls._meme_dao.delete_all()
 
-    @mock.patch('__main__.RedditParser.parse_dank_memes', return_value=mock_reddit_data())
+    @mock.patch('__main__.RedditParser._parse_dank_memes', return_value=mock_reddit_data())
     def test_insert_many_delete_many(self, meme_mock):
         self._meme_dao.delete_all()
-        memes = self._reddit_parser.find_dank_memes_from_hot()
+        memes = self._reddit_parser.find_dank_memes_hot()
         ids = self._meme_dao.insert_many(memes).inserted_ids
         assert len(ids) == 10
         assert self._meme_dao.delete_all() == 10
 
-    @mock.patch('__main__.RedditParser.parse_dank_memes', return_value=mock_reddit_data())
+    @mock.patch('__main__.RedditParser._parse_dank_memes', return_value=mock_reddit_data())
     def test_insert_one_read_one(self, meme_mock):
         self._meme_dao.delete_all()
-        meme_to_save = self._reddit_parser.find_dank_memes_from_hot().pop()
+        meme_to_save = self._reddit_parser.find_dank_memes_hot().pop()
         result = self._meme_dao.insert_one(meme_to_save)
         assert result.inserted_id is not None
 
@@ -42,10 +42,10 @@ class DaoTest(unittest.TestCase):
         assert meme_loaded.media_url == meme_to_save.media_url
         assert meme_loaded.text == meme_to_save.text
 
-    @mock.patch('__main__.RedditParser.parse_dank_memes', return_value=mock_reddit_data())
+    @mock.patch('__main__.RedditParser._parse_dank_memes', return_value=mock_reddit_data())
     def test_find_by_site(self, meme_mock):
         self._meme_dao.delete_all()
-        self._meme_dao.insert_many(self._reddit_parser.find_dank_memes_from_hot())
+        self._meme_dao.insert_many(self._reddit_parser.find_dank_memes_hot())
         assert len(self._meme_dao.find_by_site(Site.REDDIT)) == 10
 
     def test_unique_index_success(self):
@@ -62,12 +62,12 @@ class DaoTest(unittest.TestCase):
             context.exception)
         assert len(self._meme_dao.find_by_site(Site.REDDIT)) == 1
 
-    @mock.patch('__main__.RedditParser.parse_dank_memes', return_value=mock_reddit_data())
+    @mock.patch('__main__.RedditParser._parse_dank_memes', return_value=mock_reddit_data())
     def test_unique_index_bulk_success(self, meme_mock):
         self._meme_dao.delete_all()
-        self._meme_dao.insert_many(self._reddit_parser.find_dank_memes_from_hot())
+        self._meme_dao.insert_many(self._reddit_parser.find_dank_memes_hot())
         with self.assertRaises(BulkWriteError) as context:
-            self._meme_dao.insert_many(self._reddit_parser.find_dank_memes_from_hot())
+            self._meme_dao.insert_many(self._reddit_parser.find_dank_memes_hot())
         assert 'batch op errors occurred' in str(context.exception)
 
     def test_unique_index_not_used(self):

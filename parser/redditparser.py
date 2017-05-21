@@ -40,8 +40,7 @@ class RedditParser:
             params = {"count": self.fetch_limit * page, "after": last_submission.fullname}
             submissions = self._get_submission_by_popularity(popularity, params)
 
-        memes.update(self.parse_dank_memes(submissions))
-        print len(memes)
+        memes.update(self._parse_dank_memes(submissions))
         if len(memes) % self.fetch_limit == 0:
             return self._get_dank_memes(popularity, memes, self._get_last_submission(submissions))
         else:
@@ -63,7 +62,7 @@ class RedditParser:
             last_submission = submission
         return last_submission
 
-    def parse_dank_memes(self, listing):
+    def _parse_dank_memes(self, listing):
         meme_map = dict()
 
         for submission in listing:

@@ -11,12 +11,12 @@ class RedditTest(unittest.TestCase):
     def setUpClass(cls):
         cls._reddit_parser = RedditParser()
 
-    @mock.patch('__main__.RedditParser.parse_dank_memes', return_value=mock_reddit_data())
+    @mock.patch('__main__.RedditParser._parse_dank_memes', return_value=mock_reddit_data())
     def test_parser(self, meme_mock):
         # Test filteration of the memes
-        assert len(self._reddit_parser.find_dank_memes_from_hot()) == 10
-        assert len(self._reddit_parser.find_dank_memes_from_new()) == 10
-        assert len(self._reddit_parser.find_dank_memes_from_rising()) == 10
+        assert len(self._reddit_parser.find_dank_memes_hot()) == 10
+        assert len(self._reddit_parser.find_dank_memes_new()) == 10
+        assert len(self._reddit_parser.find_dank_memes_rising()) == 10
         assert len(mock_reddit_data()) == 40
 
 
