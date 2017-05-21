@@ -9,13 +9,5 @@ if __name__ == '__main__':
     meme_dao = MemeDao(ProductionConfiguration())
 
     all_memes = set()
-    all_memes.update(reddit_parser.find_dank_memes_from_hot())
-    all_memes.update(reddit_parser.find_dank_memes_from_rising())
-    all_memes.update(reddit_parser.find_dank_memes_from_new())
+    all_memes.update(reddit_parser.find_dank_memes_hot())
 
-    results = meme_dao.insert_many(all_memes)
-
-    cursor = meme_dao.find_by_site(Site.REDDIT)
-    print len(cursor)
-    for document in cursor:
-        print document

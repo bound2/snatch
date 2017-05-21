@@ -5,6 +5,13 @@ import praw
 from database.meme import Meme
 from database.meme import Site
 from util import collectionutils
+from enum import Enum
+
+
+class Popularity(Enum):
+    HOT = 1
+    RISING = 2
+    NEW = 3
 
 
 class RedditParser:
@@ -14,36 +21,47 @@ class RedditParser:
         self.memeeconomy = self.reddit.subreddit('MemeEconomy')
         self.fetch_limit = fetch_limit
 
-    def find_dank_memes_hot(self, memes, last_submission):
+    def find_dank_memes_hot(self):
+        return self._get_dank_memes(Popularity.HOT)
+
+    def find_dank_memes_rising(self):
+        return self._get_dank_memes(Popularity.RISING)
+
+    def find_dank_memes_new(self):
+        return self._get_dank_memes(Popularity.NEW)
+
+    def _get_dank_memes(self, popularity, memes=None, last_submission=None):
+        if memes is None:
+            memes = dict()
         if last_submission is None:
-            submissions = self.memeeconomy.hot(limit=self.fetch_limit)
+            submissions = self._get_submission_by_popularity(popularity)
         else:
             page = len(memes) / self.fetch_limit
-            submissions = self.memeeconomy.hot(limit=self.fetch_limit,
-                                               params={"count": self.fetch_limit * page, "after": last_submission.fullname})
+            params = {"count": self.fetch_limit * page, "after": last_submission.fullname}
+            submissions = self._get_submission_by_popularity(popularity, params)
 
         memes.update(self.parse_dank_memes(submissions))
-        meme_size = len(memes)
-        print meme_size
+        print len(memes)
         if len(memes) % self.fetch_limit == 0:
-            return self.find_dank_memes_hot(memes, self._get_last_submission(submissions))
+            return self._get_dank_memes(popularity, memes, self._get_last_submission(submissions))
         else:
-            return self.apply_filter(memes)
+            return self._apply_filter(memes)
+
+    def _get_submission_by_popularity(self, popularity, pagination_params=None):
+        if popularity is Popularity.HOT:
+            return self.memeeconomy.hot(limit=self.fetch_limit, params=pagination_params)
+        elif popularity is Popularity.RISING:
+            return self.memeeconomy.rising(limit=self.fetch_limit, params=pagination_params)
+        elif popularity is Popularity.NEW:
+            return self.memeeconomy.new(limit=self.fetch_limit, params=pagination_params)
+        else:
+            raise TypeError("Expected type Popularity, but found: %s" % popularity.whoami())
 
     def _get_last_submission(self, submissions):
         last_submission = None
         for submission in submissions._listing.children:
             last_submission = submission
         return last_submission
-
-    def find_dank_memes_from_hot(self):
-        return self.apply_filter(self.parse_dank_memes(self.memeeconomy.hot(limit=50)))
-
-    def find_dank_memes_from_rising(self):
-        return self.apply_filter(self.parse_dank_memes(self.memeeconomy.rising(limit=50)))
-
-    def find_dank_memes_from_new(self):
-        return self.apply_filter(self.parse_dank_memes(self.memeeconomy.new(limit=50)))
 
     def parse_dank_memes(self, listing):
         meme_map = dict()
@@ -54,7 +72,7 @@ class RedditParser:
 
         return meme_map
 
-    def apply_filter(self, meme_map):
+    def _apply_filter(self, meme_map):
         filtered_memes = set()
         for key, value in meme_map.iteritems():
 
