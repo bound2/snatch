@@ -16,10 +16,11 @@ class Popularity(Enum):
 
 class RedditParser:
     # TODO use single configuration for test and production?
-    def __init__(self, fetch_limit=25):
+    def __init__(self, fetch_limit=25, max_fetch_count=250):
         self.reddit = praw.Reddit('bot1')
         self.memeeconomy = self.reddit.subreddit('MemeEconomy')
         self.fetch_limit = fetch_limit
+        self.max_fetch_count = max_fetch_count
 
     def find_dank_memes_hot(self):
         return self._get_dank_memes(Popularity.HOT)
@@ -41,7 +42,8 @@ class RedditParser:
             submissions = self._get_submission_by_popularity(popularity, params)
 
         memes.update(self._parse_dank_memes(submissions))
-        if len(memes) % self.fetch_limit == 0:
+        current_count = len(memes)
+        if current_count < self.max_fetch_count and current_count % self.fetch_limit == 0:
             return self._get_dank_memes(popularity, memes, self._get_last_submission(submissions))
         else:
             return self._apply_filter(memes)
