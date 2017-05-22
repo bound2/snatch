@@ -1,5 +1,6 @@
 import time
 
+from pymongo.errors import DuplicateKeyError
 from telepot import DelegatorBot
 from telepot.helper import ChatHandler
 from telepot.loop import MessageLoop
@@ -19,16 +20,16 @@ class TelegramParser(ChatHandler):
     def __init__(self, *args, **kwargs):
         super(TelegramParser, self).__init__(*args, **kwargs)
         self._meme_dao = MemeDao(config=TestConfiguration())
-        self._total_count = 0
-        self._image_count = 0
 
     def on_chat_message(self, msg):
         self._total_count += 1
         raw_text = msg.get('text')
         if Rules.url_allowed(raw_text):
-            self._save_potential_meme(url=textutils.extract_url(text=raw_text))
-            self._image_count += 1
-            self.sender.sendMessage("Memebot found a potential image. Total images found %s" % self._image_count)
+            try:
+                self._save_potential_meme(url=textutils.extract_url(text=raw_text))
+                self.sender.sendMessage("Memebot found a potential image. Total images found %s" % self._image_count)
+            except DuplicateKeyError:
+                self.sender.sendMessage("Memebot found a duplicate image. Bad bad bad!!!")
 
     def _save_potential_meme(self, url):
         # TODO text as previous msg?
