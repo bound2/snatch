@@ -22,7 +22,6 @@ class TelegramParser(ChatHandler):
         self._meme_dao = MemeDao(config=TestConfiguration())
 
     def on_chat_message(self, msg):
-        self._total_count += 1
         raw_text = msg.get('text')
         if Rules.url_allowed(raw_text):
             try:
