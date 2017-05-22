@@ -2,7 +2,11 @@
 
 
 class Site:
+    def __init__(self):
+        pass
+
     REDDIT = 'reddit'
+    TELEGRAM = 'telegram'
 
 
 class Meme:

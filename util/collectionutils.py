@@ -1,6 +1,5 @@
-#!/usr/bin/env python
-
 from collections import Counter
+
 
 def sublist(lst1, lst2):
     c1 = Counter(lst1)
