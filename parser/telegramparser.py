@@ -26,7 +26,8 @@ class TelegramParser(ChatHandler):
         if Rules.url_allowed(raw_text):
             try:
                 self._save_potential_meme(url=textutils.extract_url(text=raw_text))
-                self.sender.sendMessage("Memebot found a potential image. Total images found %s" % self._image_count)
+                current_count = len(self._meme_dao.find_by_site(Site.TELEGRAM))
+                self.sender.sendMessage("Memebot found a potential image. Total images found %s" % current_count)
             except DuplicateKeyError:
                 self.sender.sendMessage("Memebot found a duplicate image. Bad bad bad!!!")
 
