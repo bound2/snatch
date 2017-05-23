@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 import praw
 
 from database.meme import Meme

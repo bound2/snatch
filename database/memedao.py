@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 from pymongo import ASCENDING
 from meme import Meme
 from util.jsonutils import collection_to_json

@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 import unittest
 import mock
 from pymongo.errors import DuplicateKeyError, BulkWriteError

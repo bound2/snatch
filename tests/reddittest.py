@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 import unittest
 import mock
 from testhelper import mock_reddit_data

@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-
-
 class Site:
     def __init__(self):
         pass
