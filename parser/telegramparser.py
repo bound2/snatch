@@ -33,7 +33,7 @@ class TelegramParser(ChatHandler):
 
     def _save_potential_meme(self, url):
         id = idutils.generate_id()
-        meme = Meme(post_id=id, site=Site.TELEGRAM, text='', media_url=url)
+        meme = Meme(post_id=id, site=Site.TELEGRAM, text=None, media_url=url)
         self._meme_dao.insert_one(data=meme)
 
 
