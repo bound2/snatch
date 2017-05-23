@@ -32,8 +32,7 @@ class TelegramParser(ChatHandler):
                 self.sender.sendMessage("Memebot found a duplicate image. Bad bad bad!!!")
 
     def _save_potential_meme(self, url):
-        # TODO text as previous msg?
-        id = idutils.generate_id(name='telegram.org')
+        id = idutils.generate_id()
         meme = Meme(post_id=id, site=Site.TELEGRAM, text='', media_url=url)
         self._meme_dao.insert_one(data=meme)
 
