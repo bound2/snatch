@@ -21,16 +21,26 @@ class MemeDao:
 
     def find_by_id(self, post_id, site):
         cursor = self._table.find({'post_id': post_id, 'site': site})
-        for record in cursor:
-            meme = Meme(record.get('post_id'), record.get('site'), record.get('text'), record.get('media_url'))
-            return meme
-        return None
+        memes = self._parse_find_result(cursor)
+        try:
+            memes.pop()
+        except Exception:
+            return None
 
     def find_by_site(self, site):
         cursor = self._table.find({'site': site})
+        return self._parse_find_result(cursor)
+
+    def find_non_processed(self):
+        cursor = self._table.find({'processed': False})
+        return self._parse_find_result(cursor)
+
+    def _parse_find_result(self, cursor):
         memes = set()
         for record in cursor:
-            meme = Meme(record.get('post_id'), record.get('site'), record.get('text'), record.get('media_url'))
+            meme = Meme(record.get('post_id'), record.get('site'),
+                        record.get('text'), record.get('media_url'),
+                        record.get('processed'))
             memes.add(meme)
         return memes
 

@@ -6,7 +6,7 @@ from InstagramAPI import InstagramAPI
 
 class InstagramProcessor:
 
-    DOWNLOAD_DIR = "..%sdownloads" % os.sep
+    DOWNLOAD_DIR = "..{:s}downloads".format(os.sep)
 
     def __init__(self):
         self._instagramApi = InstagramAPI('user', 'password')

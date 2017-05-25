@@ -7,15 +7,20 @@ class Site:
 
 
 class Meme:
-    def __init__(self, post_id, site, text, media_url):
+    def __init__(self, post_id, site, text, media_url, processed=False):
         self.post_id = post_id
         self.site = site
         self.text = text
         self.media_url = media_url
+        self.processed = processed
 
     def __str__(self):
-        return "post_id={:s}\nsite={:s}\ntext={:s}\nmedia_url={:s}\n".format(self.post_id, str(self.site), self.text, self
-                                                                        .media_url)
+        return "post_id={:s}\nsite={:s}\ntext={:s}\nmedia_url={:s}\nprocessed={:s}\n" \
+            .format(self.post_id,
+                    str(self.site),
+                    self.text,
+                    self.media_url,
+                    str(self.processed))
 
     def __eq__(self, other):
         if isinstance(other, self.__class__):
