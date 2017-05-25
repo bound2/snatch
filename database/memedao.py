@@ -13,17 +13,19 @@ class MemeDao:
         self._table.create_index([("post_id", ASCENDING), ("site", ASCENDING)], unique=True)
         self._table.create_index([("media_url", ASCENDING)], unique=True)
 
+    # -------------------------- CREATE OPERATIONS --------------------------#
     def insert_one(self, data):
         return self._table.insert_one(from_json(to_json(data)))
 
     def insert_many(self, data):
         return self._table.insert_many(from_json(collection_to_json(data)))
 
+    # -------------------------- READ OPERATIONS --------------------------#
     def find_by_id(self, post_id, site):
         cursor = self._table.find({'post_id': post_id, 'site': site})
         memes = self._parse_find_result(cursor)
         try:
-            memes.pop()
+            return memes.pop()
         except Exception:
             return None
 
@@ -35,6 +37,10 @@ class MemeDao:
         cursor = self._table.find({'processed': False})
         return self._parse_find_result(cursor)
 
+    def find_processed(self):
+        cursor = self._table.find({'processed': True})
+        return self._parse_find_result(cursor)
+
     def _parse_find_result(self, cursor):
         memes = set()
         for record in cursor:
@@ -44,6 +50,14 @@ class MemeDao:
             memes.add(meme)
         return memes
 
+    # -------------------------- UPDATE OPERATIONS --------------------------#
+    def mark_meme_processed(self, post_id):
+        self._table.update_one(
+            {'post_id': post_id},
+            {'$set': {'processed': True}}
+        )
+
+    # -------------------------- DELETE OPERATIONS --------------------------#
     def delete_many(self, site):
         return self._table.delete_many({'site': site}).deleted_count
 

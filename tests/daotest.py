@@ -97,6 +97,22 @@ class DaoTest(unittest.TestCase):
         assert len(self._meme_dao.find_by_site('reddit')) == 1
         assert len(self._meme_dao.find_by_site('lulztech')) == 0
 
+    @mock.patch('__main__.RedditParser._parse_dank_memes', return_value=mock_reddit_data())
+    def test_meme_processed(self, meme_mock):
+        self._meme_dao.delete_all()
+        self._meme_dao.insert_many(self._reddit_parser.find_dank_memes_hot())
+
+        memes = self._meme_dao.find_non_processed()
+        assert len(memes) == 10
+        assert len(self._meme_dao.find_processed()) == 0
+
+        for i in xrange(4):
+            meme = memes.pop()
+            self._meme_dao.mark_meme_processed(meme.post_id)
+
+        assert len(self._meme_dao.find_non_processed()) == 6
+        assert len(self._meme_dao.find_processed()) == 4
+
 
 if __name__ == '__main__':
     unittest.main()
