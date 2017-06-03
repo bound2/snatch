@@ -41,7 +41,7 @@ def parse_users(config):
     return users
 
 
-DOWNLOAD_DIR = "resources{:s}downloads{:s}".format(os.sep, os.sep)
+DOWNLOAD_DIR = "resources{:s}downloads".format(os.sep)
 
 if __name__ == '__main__':
     meme_dao = MemeDao(ProductionConfiguration())
