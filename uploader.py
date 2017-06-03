@@ -41,23 +41,24 @@ def parse_users(config):
     return users
 
 
-DOWNLOAD_DIR = "downloads"
+DOWNLOAD_DIR = "resources{:s}downloads{:s}".format(os.sep, os.sep)
 
 if __name__ == '__main__':
     meme_dao = MemeDao(ProductionConfiguration())
     uploadable_memes = meme_dao.find_non_processed()
 
-    config = ConfigParser.ConfigParser()
-    config.read("insta.ini")
-    insta_users = parse_users(config)
+    if len(uploadable_memes) > 0:
+        config = ConfigParser.ConfigParser()
+        config.read("insta.ini")
+        insta_users = parse_users(config)
 
-    for user in insta_users:
-        insta_processor = InstagramProcessor(user.username, user.password)
-        for meme in uploadable_memes:
-            file_name = fileutils.download_file(url=meme.media_url, destination_folder=DOWNLOAD_DIR)
-            file_path = DOWNLOAD_DIR + os.sep + file_name
-            try:
-                insta_processor.upload_image(file_path)
-                meme_dao.mark_meme_processed(meme.post_id)
-            finally:
-                fileutils.delete_file(DOWNLOAD_DIR, file_name)
+        for user in insta_users:
+            insta_processor = InstagramProcessor(user.username, user.password)
+            for meme in uploadable_memes:
+                file_path = fileutils.download_file(url=meme.media_url, destination_folder=DOWNLOAD_DIR)
+                try:
+                    insta_processor.upload_image(file_path)
+                    meme_dao.mark_meme_processed(meme.post_id)
+                finally:
+                    fileutils.delete_file(file_path)
+                break
