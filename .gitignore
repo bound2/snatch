@@ -1,2 +1,4 @@
 .idea*
 *.pyc
+resources/downloads/*.png
+resources/downloads/*.jpg

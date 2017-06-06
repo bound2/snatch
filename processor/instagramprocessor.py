@@ -14,6 +14,8 @@ class InstagramProcessor:
     def upload_image(self, file_path, caption='', hashtags=None):
         full_caption = self._create_full_caption(caption, hashtags)
         self._instagramApi.uploadPhoto(file_path, caption=full_caption, upload_id=None)
+        print "Uploading picture: {:s}".format(file_path)
+        print "Response: {:s}".format(self._instagramApi.LastResponse.text)
 
     def _create_full_caption(self, caption, hashtags):
         if hashtags is not None:

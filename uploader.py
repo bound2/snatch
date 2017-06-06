@@ -55,10 +55,12 @@ if __name__ == '__main__':
         for user in insta_users:
             insta_processor = InstagramProcessor(user.username, user.password)
             for meme in uploadable_memes:
-                file_path = fileutils.download_file(url=meme.media_url, destination_folder=DOWNLOAD_DIR)
+                raw_file_path = fileutils.download_file(url=meme.media_url, destination_folder=DOWNLOAD_DIR)
+                file_path = fileutils.convert_to_jpeg(raw_file_path)
+                fileutils.fix_aspect_ratio(file_path)
                 try:
                     insta_processor.upload_image(file_path)
                     meme_dao.mark_meme_processed(meme.post_id)
                 finally:
-                    fileutils.delete_file(file_path)
-                break
+                    lentils = True
+                    #fileutils.delete_file(file_path)
