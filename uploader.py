@@ -62,5 +62,4 @@ if __name__ == '__main__':
                     insta_processor.upload_image(file_path)
                     meme_dao.mark_meme_processed(meme.post_id)
                 finally:
-                    lentils = True
-                    #fileutils.delete_file(file_path)
+                    fileutils.delete_file(file_path)
