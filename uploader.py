@@ -42,6 +42,10 @@ def parse_users(config):
 
 
 DOWNLOAD_DIR = "resources{:s}downloads".format(os.sep)
+BASIC_HASHTAGS = ["#dank", "#meme", "#funny", "#joke",
+                  "#topkek", "#economy", "#grills",
+                  "#100", "#lit", "#dankmeme", "#memegram",
+                  "#polonium", "#detox"]
 
 if __name__ == '__main__':
     meme_dao = MemeDao(ProductionConfiguration())
@@ -59,7 +63,7 @@ if __name__ == '__main__':
                 file_path = fileutils.convert_to_jpeg(raw_file_path)
                 fileutils.fix_aspect_ratio(file_path)
                 try:
-                    insta_processor.upload_image(file_path)
+                    insta_processor.upload_image(file_path=file_path, hashtags=BASIC_HASHTAGS)
                     meme_dao.mark_meme_processed(meme.post_id)
                 finally:
                     fileutils.delete_file(file_path)
