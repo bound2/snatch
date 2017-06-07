@@ -14,6 +14,7 @@ from database.meme import Site
 
 from util import idutils
 from util import textutils
+from util import logger
 
 
 class TelegramParser(ChatHandler):
@@ -27,13 +28,15 @@ class TelegramParser(ChatHandler):
             try:
                 self._save_potential_meme(url=textutils.extract_url(text=raw_text))
                 current_count = len(self._meme_dao.find_by_site(Site.TELEGRAM))
-                self.sender.sendMessage("Memebot found a potential image. Total images found %s" % current_count)
+                message = 'Memebot found a potential image. Total images found %s' % current_count
             except DuplicateKeyError:
-                self.sender.sendMessage("Memebot found a duplicate image. Bad bad bad!!!")
+                message = 'Memebot found a duplicate image. Bad bad bad!!!'
+            self.sender.sendMessage(message)
+            logger.log('telegramparser.py', message)
 
     def _save_potential_meme(self, url):
-        id = idutils.generate_id()
-        meme = Meme(post_id=id, site=Site.TELEGRAM, text=None, media_url=url)
+        post_id = idutils.generate_id()
+        meme = Meme(post_id=post_id, site=Site.TELEGRAM, text=None, media_url=url)
         self._meme_dao.insert_one(data=meme)
 
 
