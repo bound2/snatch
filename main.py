@@ -3,6 +3,7 @@ from pymongo.errors import DuplicateKeyError
 from database.config import ProductionConfiguration
 from parser.redditparser import RedditParser
 from database.memedao import MemeDao
+from util import logger
 
 if __name__ == '__main__':
     reddit_parser = RedditParser()
@@ -16,6 +17,7 @@ if __name__ == '__main__':
     for meme in all_memes:
         try:
             meme_dao.insert_one(meme)
+            logger.log("main.py", "New fresh dank meme saved: %s" % str(meme))
         except DuplicateKeyError:
-            print "Unable to save a duplicate meme: %s" % str(meme)
+            logger.log("main.py", "Unable to save a duplicate meme: %s" % str(meme))
             pass
