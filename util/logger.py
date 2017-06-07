@@ -1,4 +1,5 @@
 import logging
+import datetime
 from enum import Enum
 
 
@@ -8,18 +9,16 @@ class Level(Enum):
     ERROR = 3
 
 
-_FORMAT = '%(asctime)-15s %(file_name)-8s %(message)s'
-
-
 def log(file_name, message, level=Level.INFO, console=True):
-    logging.basicConfig(filename='application.log', format=_FORMAT, level=logging.DEBUG)
-    params = {'file_name': file_name}
+    logging.basicConfig(filename='application.log', level=logging.DEBUG)
+    current_time = str(datetime.datetime.now())
+    log_message = '{:s} {:s} {:s}'.format(current_time, file_name, message)
     if level == Level.INFO:
-        logging.info(message, extra=params)
+        logging.info(log_message)
     elif level == Level.WARN:
-        logging.warn(message, extra=params)
+        logging.warn(log_message)
     elif level == Level.ERROR:
-        logging.error(message, extra=params)
+        logging.error(log_message)
 
     if console is True:
-        print '{:s}: {:s}'.format(file_name, message)
+        print log_message
