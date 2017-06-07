@@ -15,7 +15,7 @@ class Meme:
         self.processed = processed
 
     def __str__(self):
-        return "post_id={:s}\nsite={:s}\ntext={:s}\nmedia_url={:s}\nprocessed={:s}\n" \
+        return "post_id={:s}, site={:s}, text={:s}, media_url={:s}, processed={:s}" \
             .format(self.post_id,
                     str(self.site),
                     self.text,
