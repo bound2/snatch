@@ -102,12 +102,14 @@ class Rules:
 
     _BAD_KEYWORDS = [
         list(['sell', 'sell', 'sell']),
-        list(['invest', 'worthy', '?']),
-        list(['should', 'i', 'invest']),
-        list(['could', 'i', 'get']),
-        list(['what', 'do', 'you']),
-        list(['is', 'worth', 'anything']),
-        list(['safe', 'investment', '?'])
+        list(['sell', 'now']),
+        list(['time', 'to', 'sell']),
+        list(['normie', 'sell']),
+        list(['9gag']),
+        list(['ifunny']),
+        list(['buzzfeed']),
+        list(['spotify']),
+        list(['porn'])
     ]
 
     @staticmethod
