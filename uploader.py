@@ -2,6 +2,7 @@ import os
 import random
 import ConfigParser
 
+from argparse import ArgumentParser
 from util import fileutils
 from database.memedao import MemeDao
 from database.config import ProductionConfiguration
@@ -59,6 +60,12 @@ def parse_hashtags(config):
 DOWNLOAD_DIR = "resources{:s}downloads".format(os.sep)
 
 if __name__ == '__main__':
+
+    argument_parser = ArgumentParser()
+    argument_parser.add_argument('--count', default=1, help='how many memes should be uploaded per user')
+    args = argument_parser.parse_args()
+    max_upload_count = args.count
+
     meme_dao = MemeDao(ProductionConfiguration())
     uploadable_memes = meme_dao.find_non_processed()
 
@@ -74,6 +81,7 @@ if __name__ == '__main__':
 
         for user in insta_users:
             insta_processor = InstagramProcessor(user.username, user.password)
+            current_upload_count = 0
             for meme in uploadable_memes:
                 raw_file_path = fileutils.download_file(url=meme.media_url, destination_folder=DOWNLOAD_DIR)
                 file_path = fileutils.convert_to_jpeg(raw_file_path)
@@ -81,5 +89,9 @@ if __name__ == '__main__':
                 try:
                     insta_processor.upload_image(file_path=file_path, hashtags=random.sample(hashtags, 1)[0])
                     meme_dao.mark_meme_processed(meme.post_id)
+                    current_upload_count += 1
                 finally:
                     fileutils.delete_file(file_path)
+                # Break early if limit is hit
+                if current_upload_count == max_upload_count:
+                    break
