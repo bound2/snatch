@@ -1,4 +1,5 @@
 import praw
+import re
 
 from database.meme import Meme
 from database.meme import Site
@@ -13,7 +14,6 @@ class Popularity(Enum):
 
 
 class RedditParser:
-    # TODO use single configuration for test and production?
     def __init__(self, fetch_limit=25, max_fetch_count=250):
         self.reddit = praw.Reddit('bot1')
         self.memeeconomy = self.reddit.subreddit('MemeEconomy')
@@ -92,16 +92,15 @@ class Rules:
     def __init__(self):
         pass
 
-    __KEYWORDS = [
+    _KEYWORDS = [
         list(['buy', 'buy', 'buy']),
-        list(['buy', 'buy', 'buy!!!']),
         list(['invest', 'invest', 'invest']),
         list(['high profit']),
         list(['buy quick', 'sell quick']),
         list(['great potential', 'buy'])
     ]
 
-    __BAD_KEYWORDS = [
+    _BAD_KEYWORDS = [
         list(['sell', 'sell', 'sell']),
         list(['invest', 'worthy', '?']),
         list(['should', 'i', 'invest']),
@@ -113,16 +112,17 @@ class Rules:
 
     @staticmethod
     def should_be_copied(title, score):
-        if score >= 500:
-            return True
-        else:
-            words = list(title.lower().split(' '))
-            good_keywords = Rules.__match_to_keywords(words, Rules.__KEYWORDS)
-            bad_keywords = Rules.__match_to_keywords(words, Rules.__BAD_KEYWORDS)
-            return good_keywords and not bad_keywords
+        cleaned_title = re.sub(r"(!)|(\?)|(-)|(\+)", "", title)
+        words = list(cleaned_title.lower().split(' '))
+        good_keywords = Rules._match_to_keywords(words, Rules._KEYWORDS)
+        bad_keywords = Rules._match_to_keywords(words, Rules._BAD_KEYWORDS)
+        if not bad_keywords:
+            if score >= 500 or good_keywords:
+                return True
+        return False
 
     @staticmethod
-    def __match_to_keywords(words, validation_keywords):
+    def _match_to_keywords(words, validation_keywords):
         for keywords in validation_keywords:
             if collectionutils.sublist(keywords, words):
                 return True
