@@ -105,6 +105,8 @@ class Rules:
         list(['sell', 'now']),
         list(['time', 'to', 'sell']),
         list(['normie', 'sell']),
+        list(['spotted', 'on', 'sell']),
+        list(['found', 'on', 'sell']),
         list(['9gag']),
         list(['ifunny']),
         list(['buzzfeed']),
