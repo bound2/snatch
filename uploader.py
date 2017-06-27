@@ -1,4 +1,5 @@
 import os
+import random
 import ConfigParser
 
 from util import fileutils
@@ -41,20 +42,35 @@ def parse_users(config):
     return users
 
 
+def parse_hashtags(config):
+    hashtags = set()
+    sections = config.sections()
+    for section in sections:
+        tag_group = set()
+        for option in config.options(section):
+            option = option.strip()
+            if len(option) > 0:
+                tag = "#{:s}".format(option)
+                tag_group.add(tag)
+        hashtags.add(frozenset(tag_group))
+    return hashtags
+
+
 DOWNLOAD_DIR = "resources{:s}downloads".format(os.sep)
-BASIC_HASHTAGS = ["#dank", "#meme", "#funny", "#joke",
-                  "#topkek", "#economy", "#grills",
-                  "#100", "#lit", "#dankmeme", "#memegram",
-                  "#polonium", "#detox"]
 
 if __name__ == '__main__':
     meme_dao = MemeDao(ProductionConfiguration())
     uploadable_memes = meme_dao.find_non_processed()
 
     if len(uploadable_memes) > 0:
-        config = ConfigParser.ConfigParser()
-        config.read("insta.ini")
-        insta_users = parse_users(config)
+        user_config = ConfigParser.ConfigParser()
+        tag_config = ConfigParser.ConfigParser(allow_no_value=True)
+
+        user_config.read("insta.ini")
+        tag_config.read("hashtags.ini")
+
+        insta_users = parse_users(user_config)
+        hashtags = parse_hashtags(tag_config)
 
         for user in insta_users:
             insta_processor = InstagramProcessor(user.username, user.password)
@@ -63,7 +79,7 @@ if __name__ == '__main__':
                 file_path = fileutils.convert_to_jpeg(raw_file_path)
                 fileutils.fix_aspect_ratio(file_path)
                 try:
-                    insta_processor.upload_image(file_path=file_path, hashtags=BASIC_HASHTAGS)
+                    insta_processor.upload_image(file_path=file_path, hashtags=random.sample(hashtags, 1))
                     meme_dao.mark_meme_processed(meme.post_id)
                 finally:
                     fileutils.delete_file(file_path)
