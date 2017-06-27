@@ -79,7 +79,7 @@ if __name__ == '__main__':
                 file_path = fileutils.convert_to_jpeg(raw_file_path)
                 fileutils.fix_aspect_ratio(file_path)
                 try:
-                    insta_processor.upload_image(file_path=file_path, hashtags=random.sample(hashtags, 1))
+                    insta_processor.upload_image(file_path=file_path, hashtags=random.sample(hashtags, 1)[0])
                     meme_dao.mark_meme_processed(meme.post_id)
                 finally:
                     fileutils.delete_file(file_path)
