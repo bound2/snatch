@@ -4,6 +4,8 @@ import ConfigParser
 
 from argparse import ArgumentParser
 from util import fileutils
+from util import logger
+from util.logger import Level
 from database.memedao import MemeDao
 from database.config import ProductionConfiguration
 from processor.instagramprocessor import InstagramProcessor
@@ -83,14 +85,17 @@ if __name__ == '__main__':
             insta_processor = InstagramProcessor(user.username, user.password)
             current_upload_count = 0
             for meme in uploadable_memes:
-                raw_file_path = fileutils.download_file(url=meme.media_url, destination_folder=DOWNLOAD_DIR)
-                file_path = fileutils.convert_to_jpeg(raw_file_path)
-                fileutils.fix_aspect_ratio(file_path)
                 try:
+                    raw_file_path = fileutils.download_file(url=meme.media_url, destination_folder=DOWNLOAD_DIR)
+                    file_path = fileutils.convert_to_jpeg(raw_file_path)
+                    fileutils.fix_aspect_ratio(file_path)
                     insta_processor.upload_image(file_path=file_path, hashtags=random.sample(hashtags, 1)[0])
-                    meme_dao.mark_meme_processed(meme.post_id)
                     current_upload_count += 1
+                except IOError as error:
+                    detailed_message = "Erroneous meme found: {:s}{:s}{:s}".format(str(meme), os.linesep, error.message)
+                    logger.log(file_name="uploader.py", message=detailed_message, level=Level.ERROR, console=True)
                 finally:
+                    meme_dao.mark_meme_processed(meme.post_id)
                     fileutils.delete_file(file_path)
                 # Break early if limit is hit
                 if current_upload_count == max_upload_count:
