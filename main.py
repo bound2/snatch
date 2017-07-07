@@ -11,8 +11,8 @@ if __name__ == '__main__':
 
     all_memes = set()
     all_memes.update(reddit_parser.find_dank_memes_hot())
-    all_memes.update(reddit_parser.find_dank_memes_rising())
-    all_memes.update(reddit_parser.find_dank_memes_new())
+    #all_memes.update(reddit_parser.find_dank_memes_rising())
+    #all_memes.update(reddit_parser.find_dank_memes_new())
 
     for meme in all_memes:
         try:
