@@ -12,7 +12,7 @@ class Level(Enum):
 def log(file_name, message, level=Level.INFO, console=True):
     logging.basicConfig(filename='application.log', level=logging.DEBUG)
     current_time = str(datetime.datetime.now())
-    log_message = '{:s} {:s} {:s}'.format(current_time, file_name, message)
+    log_message = '%s %s %s' % (current_time, file_name, message)
     if level == Level.INFO:
         logging.info(log_message)
     elif level == Level.WARN:

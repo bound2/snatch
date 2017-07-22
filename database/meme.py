@@ -15,12 +15,8 @@ class Meme:
         self.processed = processed
 
     def __str__(self):
-        return "(post_id={:s}, site={:s}, text={:s}, media_url={:s}, processed={:s})" \
-            .format(self.post_id,
-                    str(self.site),
-                    self.text,
-                    self.media_url,
-                    str(self.processed))
+        return "(post_id=%s, site=%s, text=%s, media_url=%s, processed=%r)" % \
+               (self.post_id, self.site, self.text, self.media_url, self.processed)
 
     def __eq__(self, other):
         if isinstance(other, self.__class__):

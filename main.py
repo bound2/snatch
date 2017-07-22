@@ -17,7 +17,7 @@ if __name__ == '__main__':
     for meme in all_memes:
         try:
             meme_dao.insert_one(meme)
-            logger.log("main.py", "New fresh dank meme saved: %s" % str(meme))
+            logger.log("main.py", "New fresh dank meme saved: %s" % unicode(meme))
         except DuplicateKeyError:
-            logger.log("main.py", "Unable to save a duplicate meme: %s" % str(meme))
+            logger.log("main.py", "Unable to save a duplicate meme: %s" % unicode(meme))
             pass
